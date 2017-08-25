@@ -1,9 +1,17 @@
 
 var bShouldHideOpinions = true;
 var storageVarName = 'NOpinionEnabled';
+var entryBoxName = "c-entry-box--compact";
+var labelsName = "c-entry-box--compact__label-primary";
+
 /* ---------- !!!!!! ---------- */
-/* this script is kicked off at document_end so the DOM is received already
-look for those darn opinion articles and cut them out */
+/* 
+this script is kicked off on page load. Kinda slow but should be manageable.
+Scrubs through the DOM for any opinion labels and removes them if found. Doesn't work
+(currently) for non-headlined articles because there's nothing that I'm aware of that 
+denotes them as "opinion" articles. Possibly can scrub data from the links but that 
+seems like a lot of work
+*/
 /* ---------- !!!!!! ---------- */
 
 //Go through each c-entry-box--compact, check it's contents for "Opinion" and if we get a hit, hide the damn Div
@@ -11,26 +19,19 @@ look for those darn opinion articles and cut them out */
 
 function DoHide()
 {
-  //early out, do nooothing!
-  if (!bShouldHideOpinions)
-  {
-    return;
-  }
+  var elements = document.getElementsByClassName(entryBoxName);
 
-  var elements = document.getElementsByClassName("c-entry-box");
   //forgive me, I'm a C++ programmer and I hate web dev
   for (var i = elements.length-1; i >= 0; --i)
   {
-      console.log("Checking element #" + i + " of " + elements.length + " for Opinon labels");
       //go the label
-      var labels = elements[i].getElementsByClassName("compact__label-primary");
+      var labels = elements[i].getElementsByClassName(labelsName);
       
       for (var j = 0; j < labels.length; ++j)
       {
-          console.log("Checking Label #" + j + " of " + labels.length);
           if (labels[j].innerHTML.includes("/opinion"))
           {
-            //Get the FUCK OUT
+            //GTFO
             console.log("Removing Opinion Div");
             elements[i].parentNode.removeChild(elements[i]);
           }
@@ -42,7 +43,6 @@ chrome.storage.sync.get(storageVarName,
   function (items)
   {
     bShouldHideOpinions = items[storageVarName];
-    console.log("Should Hide: " + bShouldHideOpinions)
     if (bShouldHideOpinions == true)
     {
       DoHide();
@@ -60,7 +60,6 @@ chrome.storage.onChanged.addListener(
         {
           //reload with our changes
           bShouldHideOpinions = changes[key].newValue;
-          chrome.tabs.reload(function() {});
         }
       }
   });

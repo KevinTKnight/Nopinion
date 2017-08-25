@@ -63,6 +63,23 @@ chrome.storage.onChanged.addListener(
       {
         UpdateStatus(changes[key].newValue);
         SetExtensionEnabled(changes[key].newValue);
+
+
+          //I feel like just chrome.tabs.reload should work fine but w/e
+          chrome.tabs.query(
+            {active: true, currentWindow: true}, 
+            function(tabs) 
+            {
+              console.log("Checking " + tabs.length + " tab(s)");
+              for (var i = 0; i < tabs.length; ++i)
+              {
+                  console.log("Checking " + tabs[i].url);
+                  if (tabs[i].url.includes("polygon"))
+                  {
+                    chrome.tabs.reload(tabs[i].id);
+                  }
+              }
+            });
       }
     }
   });
