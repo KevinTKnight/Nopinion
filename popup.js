@@ -42,6 +42,17 @@ SetExtensionEnabled(true);
 chrome.storage.sync.get(storageVarName,
   function (items)
   {
+    if (chrome.runtime.lastError !== undefined)
+    {
+      //one time, set the initial value
+      chrome.storage.sync.set({'NOpinionEnabled': true}, 
+        function() 
+        {
+          // Notify that we saved.
+          console.log("Enabled settings saved");
+        });
+    }
+    
     UpdateStatus(items[storageVarName]);
     if (items[storageVarName] == true)
     {

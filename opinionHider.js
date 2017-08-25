@@ -66,6 +66,19 @@ function UnHide()
 chrome.storage.sync.get(storageVarName,
   function (items)
   {
+    if (chrome.runtime.lastError !== undefined)
+    {
+      DoHide();
+      //one time, set the initial value
+      chrome.storage.sync.set({'NOpinionEnabled': true}, 
+        function() 
+        {
+          // Notify that we saved.
+          console.log("Enabled settings saved");
+        });
+      console.log("Last Error: " + chrome.runtime.lastError.message);
+    }
+
     bShouldHideOpinions = items[storageVarName];
     if (bShouldHideOpinions == true)
     {
