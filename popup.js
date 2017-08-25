@@ -1,5 +1,6 @@
 
 var storageVarName = 'NOpinionEnabled';
+var reloadQualifications = "polygon";
 
 function DisableExtension()
 {
@@ -58,7 +59,6 @@ chrome.storage.onChanged.addListener(
   {
     for (key in changes) 
     {
-      console.log("Found " + namespace + " updates to " + key +": " + changes[key].newValue)
       if (key == storageVarName)
       {
         UpdateStatus(changes[key].newValue);
@@ -70,14 +70,10 @@ chrome.storage.onChanged.addListener(
             {active: true, currentWindow: true}, 
             function(tabs) 
             {
-              console.log("Checking " + tabs.length + " tab(s)");
-              for (var i = 0; i < tabs.length; ++i)
+              //should only be checking one tab
+              if (tabs[0].url.includes(reloadQualifications))
               {
-                  console.log("Checking " + tabs[i].url);
-                  if (tabs[i].url.includes("polygon"))
-                  {
-                    chrome.tabs.reload(tabs[i].id);
-                  }
+                chrome.tabs.reload(tabs[0].id);
               }
             });
       }

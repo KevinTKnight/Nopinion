@@ -33,7 +33,31 @@ function DoHide()
           {
             //GTFO
             console.log("Removing Opinion Div");
+            //elements[i].hidden = true;
             elements[i].parentNode.removeChild(elements[i]);
+          }
+      }
+  }
+}
+
+function UnHide()
+{
+  var elements = document.getElementsByClassName(entryBoxName);
+
+  //forgive me, I'm a C++ programmer and I hate web dev
+  for (var i = elements.length-1; i >= 0; --i)
+  {
+      //go the label
+      var labels = elements[i].getElementsByClassName(labelsName);
+      
+      for (var j = 0; j < labels.length; ++j)
+      {
+          if (labels[j].innerHTML.includes("/opinion"))
+          {
+            //GTFO
+            console.log("Receiving Opinion Div");
+            elements[i].hidden = false;
+            //elements[i].parentNode.removeChild(elements[i]);
           }
       }
   }
@@ -60,6 +84,11 @@ chrome.storage.onChanged.addListener(
         {
           //reload with our changes
           bShouldHideOpinions = changes[key].newValue;
+          //if we're hiding now, just hide (we'll refresh if we're the active tab either way so)
+          if (bShouldHideOpinions)
+          {
+            DoHide();
+          }
         }
       }
   });
